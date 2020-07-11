@@ -36,4 +36,19 @@ public class ItemServiceImpl implements ItemService {
 
         return new Item(product, count);
     }
+
+    @Override
+    public Item createProduct(Product product) {
+        return null;
+    }
+
+    @Override
+    public Item updateProduct(Product product) {
+        return null;
+    }
+
+    @Override
+    public void deleteProduct(Long id) {
+
+    }
 }

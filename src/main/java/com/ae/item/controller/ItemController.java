@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,23 +31,25 @@ public class ItemController {
         this.service = service;
     }
 
-    private static Logger logger = LoggerFactory.getLogger(ItemController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ItemController.class);
 
     @Value("${config.text}")
     private String text;
 
     @GetMapping("/item")
-    public List<Item> findItems() {
-        return service.findAllItems();
+    public ResponseEntity<List<Item>> findItems() {
+        List<Item> items = service.findAllItems();
+        return new ResponseEntity<List<Item>>(items, HttpStatus.OK);
     }
 
     @HystrixCommand(fallbackMethod = "errorItemMethod")
     @GetMapping("/item/{id}/count/{count}")
-    public Item findItems(@PathVariable final Long id, @PathVariable final Integer count) {
-        return service.findItemById(id, count);
+    public ResponseEntity<Item> findItems(@PathVariable final Long id, @PathVariable final Integer count) {
+        Item item = service.findItemById(id, count);
+        return new ResponseEntity<Item>(item, HttpStatus.OK);
     }
 
-    public Item errorItemMethod(final Long id, final Integer count) {
+    public ResponseEntity<Item>  errorItemMethod(final Long id, final Integer count) {
         Item item = new Item();
         Product product = new Product();
         product.setId(id);
@@ -59,7 +59,7 @@ public class ItemController {
         item.setCount(count);
         item.setProduct(product);
 
-        return item;
+        return new ResponseEntity<>(item, HttpStatus.OK);
     }
 
     @GetMapping("/config")
@@ -71,4 +71,23 @@ public class ItemController {
         map.put("port", port);
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
+
+    @PostMapping("/item")
+    public ResponseEntity<Item> createProduct(@RequestBody final Product product) {
+        Item item = service.createProduct(product);
+        return new ResponseEntity<>(item, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/item")
+    public ResponseEntity<Item> updateProduct(@RequestBody final Product product) {
+        Item item = service.updateProduct(product);
+        return new ResponseEntity<>(item, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/item/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable("id") final Long id) {
+        service.deleteProduct(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
 }

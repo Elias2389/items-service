@@ -16,7 +16,7 @@ public class ItemServiceFeing implements ItemService {
     private final ProductClientRest clientRest;
 
     @Autowired
-    public ItemServiceFeing(ProductClientRest clientRest) {
+    public ItemServiceFeing(final ProductClientRest clientRest) {
         this.clientRest = clientRest;
     }
 
@@ -29,19 +29,25 @@ public class ItemServiceFeing implements ItemService {
     }
 
     @Override
-    public Item findItemById(Long id, Integer count) {
+    public Item findItemById(final Long id, final Integer count) {
         Product product = clientRest.getProduct(id);
         return new Item(product, count);
     }
 
     @Override
-    public Product createProduct(Product product) {
-        return clientRest.createProduct(product);
+    public Item createProduct(final Product product) {
+        Product productToItem = clientRest.createProduct(product);
+        Product a = productToItem;
+        return new Item(productToItem, 1);
     }
 
     @Override
-    public Product updateProduct(Product product) {
-        return clientRest.updateProduct(product);
+    public Item updateProduct(final Product product) {
+        Product productToItem = clientRest.updateProduct(product);
+        Item item = new Item();
+        item.setProduct(productToItem);
+        item.setCount(1);
+        return item;
     }
 
     @Override
