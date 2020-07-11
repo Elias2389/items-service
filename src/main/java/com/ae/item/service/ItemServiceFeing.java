@@ -37,7 +37,6 @@ public class ItemServiceFeing implements ItemService {
     @Override
     public Item createProduct(final Product product) {
         Product productToItem = clientRest.createProduct(product);
-        Product a = productToItem;
         return new Item(productToItem, 1);
     }
 
