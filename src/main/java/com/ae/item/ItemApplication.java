@@ -9,7 +9,7 @@ import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Configuration;
 
- @EnableCircuitBreaker
+@EnableCircuitBreaker
 @EnableEurekaClient
 @EnableFeignClients
 @SpringBootApplication
